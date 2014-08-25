@@ -1,0 +1,24 @@
+/*@font-face {
+  font-family: 'Terminus';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Ternimus'), url(/fonts/Terminus.ttf);
+}
+@font-face {
+  font-family: 'Terminus';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Terminus Bold'), local('Terminus-Bold'), url(/fonts/TerminusBold.ttf	);
+}*/
+
+/* Null */
+body {
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	background: #000;
+	font: 14pt 'Ubuntu Mono';
+	color: #fff;
+}
