@@ -1,6 +1,6 @@
 var meta = {};
-meta.COMPUTER_NAME = "nicosaurus";
-meta.USER = "guest";
+meta.COMPUTER_NAME = "[[;#E0EFFB;]nico-izo.ru]";
+meta.USER = "[[;#008AFF;]g][[;#E0EFFB;]uest]";
 meta.greetings = "        __   __                                  _______  _______ \n" + 
 				 "       / /  / / ____     __  __   _  __  __     / ___  / / _____/ \n" +
 				 "      / /__/ / / __ \\   / / / /  // / / / /    / /  / / / /____   \n" +
@@ -8,7 +8,7 @@ meta.greetings = "        __   __                                  _______  ____
 				 "    / /  / / / / / /  / / / /\\    / /_/ /    / /__/ / _____/ /    \n" +
 				 "   /_/  /_/  \\__\\_/\\ /_/ /_/ \\\\\\ /_____/    /______/ /______/     \n";
 
-meta.greet_text = "\nWelcome to Haiku OS R5 (hrev913462)\n\nType 'help' to help and double tab to view commands\n\n";
+meta.greet_text = "\nWelcome to Haiku OS R5 (hrev913462)\n\nType 'help' to help or double tab to view commands\n\n";
 
 meta.help_text = "This is J4F written console. You can browse directories (NOT YET IMPLEMENTED), kill mobs and do many different things. SORRY BUT NOW YOU CAN DO NOTHING AHAHAHAHAHAHAHAHHAH";
 
@@ -22,15 +22,15 @@ fs.home = {};
 fs.home.guest = {};
 fs.home.guest.music = {};
 fs.home.guest.music.test = {};
-fs.home.guest.hello = "TI HUI";
+fs.home.guest.hello = "wtf";
 fs.home.guest.pi = function() { return 3.14 };
 fs.home['nico-izo'] = {};
-fs.home['nico-izo'].about_nicoizo = "He is completely boklaan.";
+fs.home['nico-izo'].about_nicoizo = "Nothing to say about";
 
 var nicoterm = {};
 
 nicoterm.promt = function(callback) {
-	callback(meta.USER + "@" + meta.COMPUTER_NAME + ":" + meta.curdir + "$ ");
+	callback(meta.USER + "@" + meta.COMPUTER_NAME + ":" + meta.curdir + "[[;#729FCF;]$] ");
 };
 
 nicoterm.update_prompt = function() {
@@ -185,7 +185,7 @@ $(document).ready(function() {
 		prompt: nicoterm.promt,
 		greeting: false,
 		history: true,
-		greetings: nicoterm.greetings,
+		greetings: nicoterm.greetings(),
 		tabcompletion: true,
 		checkArity: false,
 		processArguments: function(arg) {return arg.split(" ");}
