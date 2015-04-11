@@ -2511,7 +2511,7 @@
             wrongPassword: "Wrong password!",
             ajaxAbortError: "Error while aborting ajax call!",
             wrongArity: "Wrong number of arguments. Function '%s' expect %s got %s!",
-            commandNotFound: "Command '%s' Not Found!",
+            commandNotFound: "%s: command not found",
             oneRPCWithIgnore: "You can use only one rpc with ignoreSystemDescribe",
             oneInterpreterFunction: "You can't use more then one function (rpc with " +
                 "ignoreSystemDescribe is count as one)",
@@ -3913,7 +3913,7 @@
                 // -----------------------------------------------------------------------
                 error: function(message, finalize) {
                     //quick hack to fix trailing back slash
-                    return self.echo('[[;#f00;]' + $.terminal.escape_brackets(message).
+                    return self.echo('[[;#fff;]' + $.terminal.escape_brackets(message).
                                      replace(/\\$/, '&#92;') + ']', finalize);
                 },
                 // -----------------------------------------------------------------------
