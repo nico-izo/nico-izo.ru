@@ -1,18 +1,29 @@
+/**
+ * Dummy obj to understand that it is music
+ */
 var Mp3File = function(file) {
 	var _file = file;
-	
-	this.getUrl = function(){
+
+	this.getUrl = function() {
 		return _file;
+	};
+};
+
+var RemoteDir = function(url) {
+	var _location = url;
+
+	this.getUrl = function() {
+		return _location;
 	};
 };
 
 var meta = {};
 meta.COMPUTER_NAME = "[[;#E0EFFB;]nico-izo.ru]";
 meta.USER = "[[;#008AFF;]g][[;#E0EFFB;]uest]";
-meta.greetings = "        __   __                                  _______  _______ \n" + 
+meta.greetings = "        __   __                                  _______  _______ \n" +
 				 "       / /  / / ____     __  __   _  __  __     / ___  / / _____/ \n" +
 				 "      / /__/ / / __ \\   / / / /  // / / / /    / /  / / / /____   \n" +
-				 "     / ___  / / / / /  / / /  ///  / / / /    / /  / / /____  /   \n" + 
+				 "     / ___  / / / / /  / / /  ///  / / / /    / /  / / /____  /   \n" +
 				 "    / /  / / / / / /  / / / /\\    / /_/ /    / /__/ / _____/ /    \n" +
 				 "   /_/  /_/  \\__\\_/\\ /_/ /_/ \\\\\\ /_____/    /______/ /______/     \n";
 
@@ -23,18 +34,31 @@ meta.help_text = "This is J4F written console.";
 meta.curdir = "/home/guest";
 meta.term = {};
 
-var fs = {}; // This is /
-fs.usr = {};
-fs.usr.bin = {};
-fs.home = {};
-fs.home.guest = {};
-fs.home.guest.music = {};
-fs.home.guest.music['fripSide – Sister\'s Noise.mp3'] = new Mp3File("...");
+var d = function() {
+	return Object.create(null);
+};
+
+var fs = d(); // This is /
+fs.usr = d();
+fs.usr.bin = d();
+fs.home = d();
+fs.home.guest = d();
+fs.home.guest.music = new RemoteDir("/js/private/music.js");
 fs.home.guest.hello = "wtf";
-fs.home.guest.songtest = fs.home.guest.music['fripSide – Sister\'s Noise.mp3'];
 fs.home.guest.pi = function() { return 3.14 };
-fs.home['nico-izo'] = {};
+fs.home['nico-izo'] = d();
 fs.home['nico-izo']['about_nico-izo'] = "Nothing to say about";
+
+var loadRemoteDirs = function(fs) {
+	for(var dir in fs) {
+		if(fs[dir] instanceof RemoteDir) {
+			$("head").append("<script src='%url%'></script>".replace('%url%', fs[dir].getUrl()));
+		} else if(typeof fs[dir] === "object") {
+			console.log(fs[dir]);
+			loadRemoteDirs(fs[dir]);
+		}
+	}
+};
 
 var nicoterm = {};
 
@@ -64,7 +88,7 @@ nicoterm.normalize_path = function(path) {
 			path_normalized_obj = path_normalized_obj.slice(0, --j);
 		}
 	}
-	
+
 	return path_normalized_obj;
 };
 
@@ -72,31 +96,31 @@ var bin = fs.usr.bin;
 
 bin.echo = function(params) {
 	var parser = new CommandLineParser(params);
-	
+
 	parser.addHelpOption();
 	parser.addVersionOption();
-	
+
 	//parser.addOption("nonew", ["n", "no-newline"], "Do not add the training newline [do not work]");
 	//parser.addAlternativeOption(["e"], "Enable interpretation of backslash escapes.", "!backslash");
 	//parser.addAlternativeOption(["E"], "Disable interpretation of backslash escapes (default).", "!backslash");
 	parser.addPositionalOption("string", "String to write");
-	
+
 	if(parser.has("help")) {
 		this.echo(parser.helpString());
 		return;
 	}
-		
+
 	if(parser.has("version")) {
 		this.echo("echo (ololo coreutils) 0.0.1");
 		return;
 	}
-	
+
 	this.echo(parser.getPositional("string"));
 };
 
 bin.help = function(params) {
 	var parser = new CommandLineParser(params);
-	
+
 	parser.addHelpOption();
 	parser.addVersionOption();
 
@@ -104,51 +128,51 @@ bin.help = function(params) {
 		this.echo("You need --help option to [[b;;]HELP] command? Seriously?");
 		return;
 	}
-		
+
 	if(parser.has("version")) {
 		this.echo("help (ololo coreutils) 1.0.0");
 		return;
 	}
-	
+
 	this.echo("J4F written pseudoconsole. You can do something (what you can find, exactly) with files, programs and so on");
 };
 
 bin.clear = function(params) {
 	var parser = new CommandLineParser(params);
-	
+
 	parser.addHelpOption();
 	parser.addVersionOption();
-	
+
 	if(parser.has("help")) {
 		this.echo("Nothing is in help page for this command");
 		return;
 	}
-		
+
 	if(parser.has("version")) {
 		this.echo("clear (ololo coreutils) 1.0.0");
 		return;
 	}
-	
+
 	this.clear();
 };
 
 bin.cd = function(params) {
 	var parser = new CommandLineParser(params);
-	
+
 	parser.addPositionalOption("to");
-	
+
 	var arg1 = parser.getPositional("to");
-	
+
 	if(!arg1) {
 		meta.curdir = "/home/" + meta.USER;
 		nicoterm.update_prompt();
 		return;
 	}
-	
+
 	var cd_arr = nicoterm.normalize_path(arg1);
 	var curdir_arr = meta.curdir.split("/");
 	var j = curdir_arr.length-1;
-	
+
 
 	var new_path = "/";
 	var new_obj = fs;
@@ -174,28 +198,28 @@ bin.cd = function(params) {
 				break;
 		}
 	}
-	
+
 	if (new_path != "/" && new_path[new_path.length-1] == "/")
 		new_path = new_path.slice(0, new_path.length-1);
-		
+
 	meta.curdir = new_path;
 	nicoterm.update_prompt();
 };
 
 bin.ls = function(params) {
 	var parser = new CommandLineParser(params);
-	
+
 	parser.addPositionalOption("to");
-	
+
 	var arg1 = parser.getPositional("to");
 	if(!arg1)
 		arg1 = meta.curdir;
-	
-	var ls_arr = nicoterm.normalize_path(arg1);			
+
+	var ls_arr = nicoterm.normalize_path(arg1);
 
 	var new_obj = fs;
 	for(var i = 0; i < ls_arr.length; ++i) {
-			
+
 		switch(typeof new_obj[ls_arr[i]]) {
 			case "object":
 				new_obj = new_obj[ls_arr[i]];
@@ -214,30 +238,30 @@ bin.ls = function(params) {
 				break;
 		}
 	}
-	
+
 	var result = "";
 	for(var i = 0; i < Object.keys(new_obj).length; ++i)
 		result += Object.keys(new_obj)[i] + "  ";
-		
+
 	this.echo(result);
 };
 
 bin.cat = function(params) {
 	var parser = new CommandLineParser(params);
-	
+
 	parser.addPositionalOption("to");
-	
+
 	var arg1 = parser.getPositional("to");
-	
+
 	if(!arg1)
 		arg1 = meta.curdir;
-	
+
 	var ls_arr = nicoterm.normalize_path(arg1);
 
 	var new_obj = fs;
-	
+
 	for(var i = 0; i < ls_arr.length; ++i) {
-			
+
 		switch(typeof new_obj[ls_arr[i]]) {
 			case "object":
 				new_obj = new_obj[ls_arr[i]];
@@ -256,7 +280,7 @@ bin.cat = function(params) {
 				break;
 		}
 	}
-	
+
 	this.echo("cat: " + arg1 + ": This is directory");
 
 };
@@ -271,10 +295,10 @@ bin.mplayer = function(params) {
 	var arg1 = parser.getPositional("to");
 	if(!arg1)
 		arg1 = meta.curdir;
-	
+
 	var ls_arr = nicoterm.normalize_path(arg1);
 	var new_obj = fs;
-	
+
 	for(var i = 0; i < ls_arr.length; ++i) {
 		switch(typeof new_obj[ls_arr[i]]) {
 			case "object":
@@ -286,24 +310,22 @@ bin.mplayer = function(params) {
 				break;
 		}
 	}
-	
+
 	if(!(new_obj instanceof Mp3File)) {
 		this.echo("mplayer: " + arg1 + ": bad format");
 		return;
 	}
-	
+
 	this.pause();
-	
-	
-	
+
 	var txt = "<audio src='%FILE%' autoplay id='uberplayer'></audio>".replace("%FILE%", new_obj.getUrl());
-	
+
 	var player = $(txt);
-	
+
 	$("body").append(player);
-	
+
 	var self = this; // TODO: oh, I simple do not want .call()
-	var handler = function(event) { 
+	var handler = function(event) {
 		if(event.keyCode === 67 && event.ctrlKey === true) {
 			self.resume();
 			$("body").unbind("keydown", handler);
@@ -314,22 +336,24 @@ bin.mplayer = function(params) {
 			self.echo("Are you trying to escape?");
 		}
 	};
-	
+
 	$("body").keydown(handler); // and how can I do this with terminal methods?
-	
+
 };
 
 $(document).ready(function() {
+	loadRemoteDirs(fs);
+
 	meta.term = $('#izolenta').terminal(function(argv, term) {
 		console.log("window.scrollTo(0, %s)", document.body.scrollHeight);
 		window.scrollTo(0, document.body.scrollHeight);
-		
+
 		var params = argv.split(" ");
 		var command = params[0];
 		if(command === "") {
 			return;
 		}
-		
+
 		if($.isFunction(bin[command]))
 			bin[command].call(term, argv);
 		else if(command[0] === "." || command[0] === "/") {
@@ -349,7 +373,7 @@ $(document).ready(function() {
 			}
 		} else
 			term.echo(command + ": command not found");
-		
+
 	}, {
 		prompt: nicoterm.promt,
 		greeting: false,
@@ -359,6 +383,38 @@ $(document).ready(function() {
 		checkArity: false,
 		processArguments: function(arg) {
 			return arg;
+		},
+		historyFilter: function(command) {
+			if(command[0] === " ")
+				return false;
+			return true;
+		},
+		keydown: function(event, terminal) {
+			console.log(event);
+			if(event.keyCode === 9) { // tab
+				console.log(terminal);
+				//return false;
+			}
+			//return true;
+		},
+		completion: function(terminal, str, callback) {
+			var ls_arr = nicoterm.normalize_path(meta.curdir);
+			var new_obj = fs;
+			
+			for(var i = 0; i < ls_arr.length; ++i) {
+				switch(typeof new_obj[ls_arr[i]]) {
+					case "object":
+						new_obj = new_obj[ls_arr[i]];
+						break;
+					default:
+						// literally, it's impossible
+						console.log("wtf", ls_arr[i]);
+				}
+			}
+			
+			
+			var arrayOfFiles = Object.keys(new_obj);
+			callback(arrayOfFiles);
 		}
 	});
 });
