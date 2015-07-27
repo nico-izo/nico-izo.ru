@@ -390,30 +390,33 @@ $(document).ready(function() {
 			return true;
 		},
 		keydown: function(event, terminal) {
-			console.log(event);
 			if(event.keyCode === 9) { // tab
-				console.log(terminal);
-				//return false;
 			}
-			//return true;
 		},
 		completion: function(terminal, str, callback) {
-			var ls_arr = nicoterm.normalize_path(meta.curdir);
+			var curr = str;
+			var ls_arr = nicoterm.normalize_path(curr);
+
 			var new_obj = fs;
-			
+
 			for(var i = 0; i < ls_arr.length; ++i) {
 				switch(typeof new_obj[ls_arr[i]]) {
 					case "object":
 						new_obj = new_obj[ls_arr[i]];
 						break;
 					default:
-						// literally, it's impossible
-						console.log("wtf", ls_arr[i]);
+						break;
 				}
 			}
-			
-			
+
+			curr = curr.split("/");
+			if(curr[curr.length-1] !== "") {
+				curr.pop();
+				curr.push("");
+			}
+			curr = curr.join("/");
 			var arrayOfFiles = Object.keys(new_obj);
+			arrayOfFiles = arrayOfFiles.map(s => curr + s);
 			callback(arrayOfFiles);
 		}
 	});
